@@ -1,4 +1,4 @@
-Web3 Wallet App
+# Web3 Wallet App
 
 A Sepolia wallet dashboard built with React, TypeScript, wagmi v3, and viem.
 
