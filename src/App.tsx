@@ -1,8 +1,10 @@
-import { useConnect, useConnection } from "wagmi";
+import { useBalance, useConnect, useConnection } from "wagmi";
 import "./App.css";
 import type { Address } from "viem";
 import { useDisconnect } from "wagmi";
 import { useConnectors } from "wagmi";
+import { config } from "./config";
+import BalancePanel from "./components/BalancePanel";
 
 function shortenAddress(address: Address | undefined): string {
   if (address === undefined) {
@@ -17,8 +19,16 @@ function App() {
   const connectors = useConnectors();
   const disconnect = useDisconnect();
   const { mutate: connectWallet, error } = useConnect();
-
-  console.log("Status:", status);
+  const {
+    data: balance,
+    isLoading: initialLoading,
+    isFetching: refreshing,
+    error: balanceError,
+    refetch,
+  } = useBalance({
+    address,
+    config,
+  });
 
   return (
     <>
@@ -26,6 +36,13 @@ function App() {
       {status === "connected" ? (
         <>
           <p>{shortenAddress(address)}</p>
+          <BalancePanel
+            loading={initialLoading}
+            error={balanceError}
+            balance={balance}
+            refetch={refetch}
+            isFetching={refreshing}
+          />
           <button onClick={() => disconnect.mutate()}>Disconnect</button>
         </>
       ) : status === "connecting" ? (
@@ -36,18 +53,19 @@ function App() {
         <>
           <p>Reconnecting Wallet...</p>
         </>
-      ) : status === "disconnected" ? (
-        <div
-          style={{
-            display: "flex",
-            margin: "0 auto",
-            marginInline: "10px",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          {connectors.length > 0 ? (
-            connectors.map((connector) => (
+      ) : (
+        <>
+          <p>Connect a wallet to see your balance.</p>
+          <div
+            style={{
+              display: "flex",
+              margin: "0 auto",
+              marginInline: "10px",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            {connectors.map((connector) => (
               <button
                 key={connector.id}
                 onClick={() => connectWallet({ connector })}
@@ -58,7 +76,7 @@ function App() {
                   margin: "auto 0",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "4px",
+                  gap: "4ﬁpx",
                 }}
               >
                 {connector.icon && (
@@ -66,20 +84,29 @@ function App() {
                 )}
                 {connector.name}
               </button>
-            ))
-          ) : (
-            <>You have no wallet extension install on your browser.</>
-          )}
-        </div>
-      ) : null}
+            ))}
+          </div>
+        </>
+      )}
 
       {error && (
         <p role="alert">
-          {(error.name as string) === "UserRejectedRequestError"
-            ? "You cancelled the wallet connection. Try again whenever you're ready."
-            : (error.name as string) === "ProviderNotFoundError"
-              ? "No wallet found. Please install or enable one."
-              : error.message}
+          {(error.name as string) === "UserRejectedRequestError" ? (
+            "You cancelled the wallet connection. Try again whenever you're ready."
+          ) : (error.name as string) === "ProviderNotFoundError" ? (
+            <>
+              No wallet found.{" "}
+              <a
+                href="https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Install MetaMask
+              </a>
+            </>
+          ) : (
+            error.message
+          )}
         </p>
       )}
     </>
