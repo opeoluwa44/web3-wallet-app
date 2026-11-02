@@ -1,75 +1,38 @@
-# React + TypeScript + Vite
+Web3 Wallet App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Sepolia wallet dashboard built with React, TypeScript, wagmi v3, and viem.
 
-Currently, two official plugins are available:
+## Status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Working today**
 
-## React Compiler
+- Wallet connection with four states: connecting, reconnecting, connected, disconnected
+- Handling for rejected connections and for browsers with no wallet
+- Balance reading with loading, error, and refresh states
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Next**
 
-## Expanding the ESLint configuration
+- Sending ETH on Sepolia
+- Transaction receipt tracking and failure states
+- Unsupported-network detection
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> Runs on the **Sepolia testnet only**. Never use a wallet that holds real funds.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React 19, TypeScript, Vite
+- wagmi v3 and viem v2
+- TanStack Query v5
+- Vitest for unit tests
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Run locally
 
-```
+Requires Node.js and a browser wallet extension (for example MetaMask) set to Sepolia.
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+    npm install
+    npm run dev
+    npm test
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Learning log
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+I'm documenting what I build and learn in [DEVLOG.md](./docs/DEVLOG.md).
